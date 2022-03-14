@@ -1,13 +1,13 @@
 
-import { E_PCL_RELATION, I_PCL_TYPE_DATA, T_PCL_CHECK_RES } from "./Const";
-import { PCLMetaProcessor } from "./MetaProcessor";
-import { getAllCombination, getCurArr_SortByVal, getGameValue, getIsInTopLevel, getIsLineLimitType, getOneSetCountOfType, getTotalCount, getUpperBomb, getValItemVal } from "./PCLSpecificGetFn";
-import { E_PCL_CARDTYPE, E_PCL_LEVEL, PCL_lineLimitVal, PCL_typeDefine, PCL_typeLevelDic } from "./SpecificConfig";
+import { E_RELATION, I_TYPE_DATA, T_CHECK_RES } from "./Const";
+import { MetaProcessor } from "./MetaProcessor";
+import { E_CARDTYPE, TypeDefine, LineLimitVal, TypeLevelDic, E_LEVEL } from "./SpecificConfig";
+import { getCurArr_SortByVal, getGameValue, getIsInTopLevel, getIsLineLimitType, getOneSetCountOfType, getTotalCount, getUpperBomb, getValItemVal } from "./SpecificGetFn";
 
 export interface T_PCL_CHECK_RES_FINAL {
-    hero: T_PCL_CHECK_RES;
-    accompanyArr: T_PCL_CHECK_RES[];
-    type: E_PCL_CARDTYPE;
+    hero: T_CHECK_RES;
+    accompanyArr: T_CHECK_RES[];
+    type: E_CARDTYPE;
 }
 
 export type T_MASTER_DATA = {
@@ -19,7 +19,7 @@ export type T_ACCOMPANY_RULER = {
     itemCount: number,
     minCount: number
 }
-export class PCLPokerCalculator {
+export class PokerCalculator {
     constructor() {
     }
     /**
@@ -45,26 +45,10 @@ export class PCLPokerCalculator {
      * @param attackterArr 
      * - 仅支持带牌为一种元类型（目前牌型还未出现多种元类型）
      */
-    /* private getAccompanyRuler(attackterArr: number[][]): T_ACCOMPANY_RULER {
-        let _resObj = <T_ACCOMPANY_RULER>{};
-        if (attackterArr.length == 0) return null;
-        let _itemCount: number = attackterArr[0].length;
-
-        _resObj.beginIdx = 0;
-        _resObj.itemCount = _itemCount;
-        _resObj.minCount = attackterArr.length;
-
-        return _resObj;
-    } */
-    /**
-     * 获取从规尺
-     * @param attackterArr 
-     * - 仅支持带牌为一种元类型（目前牌型还未出现多种元类型）
-     */
-    getAccompanyRulerDIY(type: E_PCL_CARDTYPE): T_ACCOMPANY_RULER {
+    getAccompanyRulerDIY(type: E_CARDTYPE): T_ACCOMPANY_RULER {
         let _resObj = {} as T_ACCOMPANY_RULER;
 
-        let _define = PCL_typeDefine[type][1];
+        let _define = TypeDefine[type][1];
         if (!_define) return null;
 
         _resObj.beginIdx = 0;
@@ -81,8 +65,8 @@ export class PCLPokerCalculator {
         beginIdx: number;
         len: number;
         itemCount: number;
-    }): T_PCL_CHECK_RES[] {
-        let _res: T_PCL_CHECK_RES[] = [];
+    }): T_CHECK_RES[] {
+        let _res: T_CHECK_RES[] = [];
         let _curArr: number[][] = getCurArr_SortByVal(ownArr);
         let { beginIdx, len, itemCount } = ruler;
 
@@ -95,7 +79,7 @@ export class PCLPokerCalculator {
             let _arr: number[] = [];
             _arr2Measure.forEach((itemArr) => {
                 let _tempFlag: boolean = true;
-                if (len >= 2 && getIsLineLimitType(type)) _tempFlag = getValItemVal(itemArr) <= PCL_lineLimitVal;
+                if (len >= 2 && getIsLineLimitType(type)) _tempFlag = getValItemVal(itemArr) <= LineLimitVal;
                 if (!_tempFlag) return;
                 if (itemArr.length >= itemCount) {
                     _arr = _arr.concat(itemArr.slice(0, itemCount));
@@ -117,20 +101,20 @@ export class PCLPokerCalculator {
      * @param attacktAccompanyRuler 
      */
     private getAccompany(ownArrExcludeHero: number[], attacktAccompanyRuler: T_ACCOMPANY_RULER, accompanyCount: number, setCount: number)
-        : T_PCL_CHECK_RES[] {
+        : T_CHECK_RES[] {
         let _accompanyCount: number = accompanyCount;
         if (_accompanyCount === 0) return [];
-        let _res: T_PCL_CHECK_RES[] = [];
+        let _res: T_CHECK_RES[] = [];
 
         let _curArr: number[][] = getCurArr_SortByVal(ownArrExcludeHero);
 
         let itemCount = attacktAccompanyRuler.itemCount;
 
         /**按值由小到大排列 */
-        let _metaProcessorArr: PCLMetaProcessor[] = (() => {
+        let _metaProcessorArr: MetaProcessor[] = (() => {
             let _res = [];
             for (const item of _curArr) {
-                let _metaProcessor = new PCLMetaProcessor(item);
+                let _metaProcessor = new MetaProcessor(item);
                 _metaProcessor.setVal(getValItemVal(item));
                 _res.push(_metaProcessor);
             }
@@ -138,15 +122,12 @@ export class PCLPokerCalculator {
         })()
 
         for (let i = 0; i < _metaProcessorArr.length; i++) {
-
             const _metaProcessor = _metaProcessorArr[i];
-
             let _nullFlag: boolean = true;
             for (let k = itemCount; k > 0; k--) {
                 let _fulfiledItem: number[][] = _metaProcessor.getMeta(k);
                 if (_fulfiledItem && _fulfiledItem.length != 0) {
                     _nullFlag = false;
-                    // for (let j = 0, _len = _fulfiledItem.length; j < _len; j++) {
                     for (let j = 0, _len = setCount; j < _len; j++) {
                         let _temp = _fulfiledItem[j];
                         if (!_temp) continue;
@@ -189,7 +170,7 @@ export class PCLPokerCalculator {
     separateAccompanyAndHero(arr: number[], type: number): { hero: number[][], accompany: number[][] } {
         if (arr.length == 0) return { hero: [], accompany: [] };
         let _valArr = getCurArr_SortByVal(arr);
-        let _typeDefinition = PCL_typeDefine[type];
+        let _typeDefinition = TypeDefine[type];
 
         let _heroArr: number[][] = [];
         let _accompanyArr: number[][] = [];
@@ -204,13 +185,13 @@ export class PCLPokerCalculator {
         let _lenDic = {};
         let _lenDicKeyMax: number = 0;
         //是否可继续查找
-        let _flag: boolean = false;
-        while (!_flag) {
+        let _canContinue: boolean = false;
+        while (!_canContinue) {
             /**按值由小到大排列 */
-            let _metaProcessorArr: PCLMetaProcessor[] = (() => {
+            let _metaProcessorArr: MetaProcessor[] = (() => {
                 let _res = [];
                 for (const item of _valArr) {
-                    _res.push(new PCLMetaProcessor(item));
+                    _res.push(new MetaProcessor(item));
                 }
                 return _res;
             })()
@@ -229,7 +210,7 @@ export class PCLPokerCalculator {
                     const _metaProcessor = _metaProcessorArr[j];
                     let _metaProcessor_countValue: number[][] = _metaProcessor.getMeta(_rulerItem.count);
                     if (_metaProcessor_countValue.length != 0) {
-                        if (_rulerItem.valRelation == E_PCL_RELATION.NONE) {
+                        if (_rulerItem.valRelation == E_RELATION.NONE) {
                             if (!_lenDic[_rulerItem.count]) {
                                 _lenDic[_rulerItem.count] = [];
                             }
@@ -243,7 +224,7 @@ export class PCLPokerCalculator {
                             _metaProcessor.update(_metaProcessor_countValue["flat"]());
                             _condition++;
                             break;
-                        } else if (_rulerItem.valRelation == E_PCL_RELATION.INCREASE) {
+                        } else if (_rulerItem.valRelation == E_RELATION.INCREASE) {
                             if (!_lenDic[_rulerItem.count]) {
                                 _lenDic[_rulerItem.count] = [];
                                 _lenDic[_rulerItem.count].push(_metaProcessor_countValue[0]);
@@ -274,13 +255,10 @@ export class PCLPokerCalculator {
                             }
 
                         }
-                        // else if(_rulerItem.valRelation == E_PCL_RELATION.EQUEAL){
-
-                        // }
                     }
                 }
                 if (_condition === len) {
-                    _flag = true;
+                    _canContinue = true;
 
                     for (const len in _lenDic) {
                         if (Object.prototype.hasOwnProperty.call(_lenDic, len)) {
@@ -297,7 +275,7 @@ export class PCLPokerCalculator {
             }
 
             ++_beginIdx;
-            if (_beginIdx === _metaProcessorArr.length) _flag = true;
+            if (_beginIdx === _metaProcessorArr.length) _canContinue = true;
         }
         return { hero: _heroArr, accompany: _accompanyArr }
     }
@@ -307,12 +285,12 @@ export class PCLPokerCalculator {
      * @param definition 
      * @param setCount 套数
      */
-    private getTypeRuler(definition: I_PCL_TYPE_DATA[], setCount: number): { count: number, valRelation: E_PCL_RELATION }[] {
-        let _res: { count: number, valRelation: E_PCL_RELATION }[] = [];
+    private getTypeRuler(definition: I_TYPE_DATA[], setCount: number): { count: number, valRelation: E_RELATION }[] {
+        let _res: { count: number, valRelation: E_RELATION }[] = [];
         for (let j = 0; j < definition.length; j++) {
             const _typeDefinition = definition[j];
             for (let i = 0; i < setCount; i++) {
-                let _item = <{ count: number, valRelation: E_PCL_RELATION }>{};
+                let _item = <{ count: number, valRelation: E_RELATION }>{};
                 _item.count = _typeDefinition.metaType;
                 _item.valRelation = _typeDefinition.relation;
                 _res.push(_item);
@@ -321,43 +299,7 @@ export class PCLPokerCalculator {
         return _res;
     }
 
-    /**带牌组合,基于值 */
-    /*  private getAccompanyCombinationRes_BaseVal(heroAndAccom: {
-         hero: T_PCL_CHECK_RES,
-         accompanyArr: T_PCL_CHECK_RES[]
-     }, accompanyCount: number): T_PCL_CHECK_RES[][] {
-         let _resAccompArrArr: T_PCL_CHECK_RES[][] = [];
-         let _accomArr_raw = heroAndAccom.accompanyArr;
- 
-         for (let j = 0; j < _accomArr_raw.length; j++) {
-             const _beginAccomItem = _accomArr_raw[j];
-             for (let k = j + 1; k < _accomArr_raw.length;) {
-                 let _accomArr: T_PCL_CHECK_RES[] = [];
-                 _accomArr.push(_beginAccomItem);
-                 for (let kk = 0; kk < accompanyCount - 1; kk++) {
-                     const _combineAccomItem = _accomArr_raw[k];
-                     _accomArr.push(_combineAccomItem);
-                     k++;
-                 }
-                 _resAccompArrArr.push(_accomArr);
-             }
-         }
-         return _resAccompArrArr;
-     } */
-
-    private getAccompanyCombinationRes(heroAndAccom: {
-        hero: T_PCL_CHECK_RES,
-        accompanyArr: T_PCL_CHECK_RES[]
-    }, accompanySetCount: number) {
-        let _accomArr_raw = heroAndAccom.accompanyArr;
-        let _allCombination: T_PCL_CHECK_RES[][] = getAllCombination(accompanySetCount, _accomArr_raw, 0);
-        return _allCombination;
-    }
-
-    // private getHero_BaseBeginIdxAndLen(handArr: number[], beginIdx: number, len: number) { }
-
-    /**是否为某种类型,不带master */
-    public isType(arr: number[], type: number): boolean {
+    public isType(arr: number[], type: E_CARDTYPE): boolean {
         let _temp = this.separateAccompanyAndHero(arr, type);
         return _temp.hero.length != 0;
     }
@@ -400,11 +342,10 @@ export class PCLPokerCalculator {
             _res.push(_item);
         }
         return _res;
-        // return this.getFinalResult(_res, _accompanySetCount, masterCount);
     }
 
     /**获取主牌牌值 */
-    private getHeroValArr(hero: T_PCL_CHECK_RES): number[] {
+    private getHeroValArr(hero: T_CHECK_RES): number[] {
         let _res = [];
         let _heroOriginArr = hero.arr;
         let _len = _heroOriginArr.length;
@@ -419,7 +360,7 @@ export class PCLPokerCalculator {
     }
 
     /**带牌排除与主牌值相同的项 */
-    private removeSameValWithHeroInAccompanyArr(accompanyArr: T_PCL_CHECK_RES[], heroValArr: number[]) {
+    private removeSameValWithHeroInAccompanyArr(accompanyArr: T_CHECK_RES[], heroValArr: number[]) {
         for (let i = 0; i < accompanyArr.length; i++) {
             const _accompanyItem = accompanyArr[i];
             if (_accompanyItem.arr && _accompanyItem.arr[0] && heroValArr.indexOf(getGameValue(_accompanyItem.arr[0])) != -1) {
@@ -433,9 +374,9 @@ export class PCLPokerCalculator {
     public getBombTypeComnbination(handWithoutMaster: number[]): T_PCL_CHECK_RES_FINAL[] {
         let _res: T_PCL_CHECK_RES_FINAL[] = [];
         //长度4炸弹
-        const _type: number = E_PCL_CARDTYPE.CT_BOMB_CARD;
+        const _type: number = E_CARDTYPE.CT_BOMB_CARD;
         //此处只处理长度为4的炸弹（软炸，硬炸，癞子炸，纯癞子炸）
-        let _count: number = PCL_typeDefine[_type][0].metaType * PCL_typeDefine[_type][0].minCount;
+        let _count: number = TypeDefine[_type][0].metaType * TypeDefine[_type][0].minCount;
         let _heroRuler = this.getHeroRulerDiy(0, _type, _count);
         _res = this.tipSameLevel(handWithoutMaster, _type, _heroRuler, null);
         return _res;
@@ -446,8 +387,8 @@ export class PCLPokerCalculator {
         let _res = [];
         if (handCards.length == 0 && masterArr.length == 0) return _res;
 
-        const _type: number = E_PCL_CARDTYPE.CT_MISSILE_CARD;
-        var _define = PCL_typeDefine[_type];
+        const _type: number = E_CARDTYPE.CT_MISSILE_CARD;
+        var _define = TypeDefine[_type];
         let _numArr: number[] = _define.map((item) => { return item.val as number });
         let _tempFlag0: boolean = _numArr.every((val) => { return handCards.indexOf(val) != -1 })
         let _tempFlag1: boolean = _numArr.every((val) => { return masterArr.indexOf(val) != -1 })
@@ -468,8 +409,8 @@ export class PCLPokerCalculator {
         len: number;
         itemCount: number;
     } {
-        let _define = PCL_typeDefine[type][0];
-        let _heroLen: number = totalCount / getOneSetCountOfType(PCL_typeDefine[type])
+        let _define = TypeDefine[type][0];
+        let _heroLen: number = totalCount / getOneSetCountOfType(TypeDefine[type])
         if (_heroLen % 1 != 0 || _heroLen < _define.minCount) return null;
 
         return {
@@ -480,21 +421,20 @@ export class PCLPokerCalculator {
     }
 
     /**提示所有类型层级的组合 */
-    public tipAllLevel(handWithoutMaster: number[], attackter: number[], type: E_PCL_CARDTYPE, masterCount: number, masterArr: number[]): T_PCL_CHECK_RES_FINAL[] {
-        if (type == E_PCL_CARDTYPE.CT_MISSILE_CARD) return [];
+    public tipAllLevel(handWithoutMaster: number[], attackter: number[], type: E_CARDTYPE, masterCount: number, masterArr: number[]): T_PCL_CHECK_RES_FINAL[] {
+        if (type == E_CARDTYPE.CT_MISSILE_CARD) return [];
 
         let _sameLevelRes: T_PCL_CHECK_RES_FINAL[] = [];
         let _uppperLevelRes: T_PCL_CHECK_RES_FINAL[] = [];
         //第一层级的类型
-        if (PCL_typeLevelDic[E_PCL_LEVEL.ONE].indexOf(type) != -1) {
+        if (TypeLevelDic[E_LEVEL.ONE].indexOf(type) != -1) {
             let _attackter = this.separateAccompanyAndHero(attackter, type);
             let _heroRuler = this.getHeroRuler(_attackter.hero);
-            // let _accompanyRuler = this.getAccompanyRuler(_attackter.accompany);
             let _accompanyRuler = this.getAccompanyRulerDIY(type);
 
             _sameLevelRes = this.tipSameLevel(handWithoutMaster, type, _heroRuler, _accompanyRuler);
             _uppperLevelRes = this.getBombTypeComnbination(handWithoutMaster);
-        } else if (type == E_PCL_CARDTYPE.CT_BOMB_CARD) {
+        } else if (type == E_CARDTYPE.CT_BOMB_CARD) {
             let _bombLevelRes = this.getBombTypeComnbination(handWithoutMaster);
             _sameLevelRes = getUpperBomb(_bombLevelRes, attackter);
         }
@@ -503,7 +443,7 @@ export class PCLPokerCalculator {
         return _sameLevelRes.concat(_uppperLevelRes).concat(_topLevelRes);
     }
 
-    public canDefeat(deffensiveItemArr: number[], attackter: number[], type: number, masterCount: number, masterArr: number[]): { type: E_PCL_CARDTYPE, can: boolean } {
+    public canDefeat(deffensiveItemArr: number[], attackter: number[], type: number, masterCount: number, masterArr: number[]): { type: E_CARDTYPE, can: boolean } {
         let _tempRes = this.tipAllLevel(deffensiveItemArr, attackter, type, masterCount, masterArr);
         if (_tempRes.length != 0) {
             for (let i = 0; i < _tempRes.length; i++) {
@@ -520,6 +460,18 @@ export class PCLPokerCalculator {
             type: null,
             can: false
         };
+    }
+
+    checkCardType(cards: number[]): boolean {
+        let _types = Object.keys(E_CARDTYPE);
+        for (let i = 0; i < _types.length; i++) {
+            const _type = _types[i];
+            if(!isNaN(parseInt(_type)) && +_type != E_CARDTYPE.CT_ERROR){
+                let _isType = this.isType(cards, +_type);
+                if (_isType) return true;
+            }
+        }
+        return false;
     }
 
 

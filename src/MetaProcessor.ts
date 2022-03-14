@@ -1,9 +1,9 @@
 
-import { E_PCL_META } from "./Const";
+import { E_META } from "./Const";
 
 /**元类型加工器,以值作元 */
-export class PCLMetaProcessor {
-    private mMetaLib: { [type: number]: number[][] } = {};
+export class MetaProcessor {
+    private mMetaLib: { [count: number]: number[][] } = {};
     //arr 值相同的序列号数组
     constructor(arr: number[]) {
         this.load(arr);
@@ -17,12 +17,12 @@ export class PCLMetaProcessor {
         this._val = v;
     }
 
-    load(arr: number[]) {
+    private load(arr: number[]) {
         this.update(arr);
     }
 
     update(arr: number[]) {
-        let _obj = Object.keys(E_PCL_META);
+        let _obj = Object.keys(E_META);
         for (const key in _obj) {
             if (Object.prototype.hasOwnProperty.call(_obj, key)) {
                 const _metaType = _obj[key];
@@ -35,11 +35,11 @@ export class PCLMetaProcessor {
     }
 
     /**包含的元类型数组 */
-    getMeta(count: E_PCL_META): number[][] {
+    getMeta(count: E_META): number[][] {
         return this.mMetaLib[count];
     }
 
-    processByMetaType(arr: number[], type: E_PCL_META): number[][] {
+    processByMetaType(arr: number[], type: E_META): number[][] {
         let _arr = arr.slice();
         let _res: number[][] = [];
         let _len: number = arr.length;

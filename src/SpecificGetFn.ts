@@ -1,13 +1,12 @@
 
 import { T_PCL_CHECK_RES_FINAL } from './Ruler';
-
-import { I_PCL_TYPE_DATA, T_PCL_CHECK_RES } from "./Const";
-import { E_PCL_CARD_FACE, PCL_valueCountDic, PCL_valueDic, PCL_typeLevelDic, E_PCL_LEVEL, E_PCL_CARDTYPE, PCL_limitValTypeArr, standardSerialArr } from "./SpecificConfig";
+import { I_TYPE_DATA, T_CHECK_RES } from "./Const";
+import { E_CARD_FACE, PCL_valueCountDic, ValueDic, TypeLevelDic, E_LEVEL, E_CARDTYPE, LimitValTypeArr, standardSerialArr } from "./SpecificConfig";
 
 /**获取游戏中计算用的牌值(与牌面显示有差别 e.g. 牌面值为2,游戏值为15) */
 export function getGameValue(serialNum: number): number {
-    let _faceVal: E_PCL_CARD_FACE = getFaceValue(serialNum);
-    return PCL_valueDic[_faceVal];
+    let _faceVal: E_CARD_FACE = getFaceValue(serialNum);
+    return ValueDic[_faceVal];
 }
 
 /**获取某个值的默认序列号 */
@@ -38,16 +37,16 @@ export function getCurValueDic(arr: number[]): { [val: number]: number[] } {
 
 export function getSortedValArr(): number[] {
     let _arr: number[] = [];
-    for (const val in PCL_valueDic) {
-        if (Object.prototype.hasOwnProperty.call(PCL_valueDic, val)) {
-            const _gameVal = PCL_valueDic[val];
+    for (const val in ValueDic) {
+        if (Object.prototype.hasOwnProperty.call(ValueDic, val)) {
+            const _gameVal = ValueDic[val];
             _arr.push(_gameVal);
         }
     }
     return _arr.sort((a, b) => { return a - b });
 }
-export function getIsInTopLevel(type: E_PCL_CARDTYPE): boolean {
-    return PCL_typeLevelDic[E_PCL_LEVEL.TOP].indexOf(type) != -1;
+export function getIsInTopLevel(type: E_CARDTYPE): boolean {
+    return TypeLevelDic[E_LEVEL.TOP].indexOf(type) != -1;
 }
 
 
@@ -75,12 +74,12 @@ export function getCurArr_SortByVal(arr: number[]): number[][] {
     return _resArr;
 }
 
-export function getIsLineLimitType(type: E_PCL_CARDTYPE): boolean {
-    return PCL_limitValTypeArr.indexOf(type) != -1;
+export function getIsLineLimitType(type: E_CARDTYPE): boolean {
+    return LimitValTypeArr.indexOf(type) != -1;
 }
 
 /**获取类型定义 单套 数量 eg. 飞机带单 3+1 连对 2 四带两张 4+2*/
-export function getOneSetCountOfType(_typeDefinition: I_PCL_TYPE_DATA[]): number {
+export function getOneSetCountOfType(_typeDefinition: I_TYPE_DATA[]): number {
     let _res: number = 0;
     _typeDefinition.forEach((element, idx) => {
         //英雄
@@ -95,8 +94,8 @@ export function getOneSetCountOfType(_typeDefinition: I_PCL_TYPE_DATA[]): number
     return _res;
 }
 export function getTotalCount(data: {
-    hero: T_PCL_CHECK_RES;
-    accompanyArr: T_PCL_CHECK_RES[];
+    hero: T_CHECK_RES;
+    accompanyArr: T_CHECK_RES[];
 }) {
     let _cnt: number = 0;
     _cnt += data.hero.arr.length;

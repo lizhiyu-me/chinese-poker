@@ -1,8 +1,7 @@
-/**masterValArr值为null则为癞子本身牌值*/
-export type T_PCL_CHECK_RES = {
+export type T_CHECK_RES = {
     arr: number[];
 }
-export enum E_PCL_META {
+export enum E_META {
     NONE,
     ONE,
     TWO,
@@ -13,16 +12,16 @@ export enum E_PCL_META {
     SEVEN,
     EIGHT,
 }
-export enum E_PCL_RELATION {
+export enum E_RELATION {
     NONE,
-    EQUEAL,
+    EQUAL,
     INCREASE,
     DECREASE,
 }
-export interface I_PCL_TYPE_DATA {
-    metaType: E_PCL_META,
+export interface I_TYPE_DATA {
+    metaType: E_META,
     minCount: number,
-    relation: E_PCL_RELATION,
+    relation: E_RELATION,
     val?:number|number[]
 }
 

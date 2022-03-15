@@ -1,7 +1,6 @@
-import { PokerCalculator } from "./Ruler";
-import { E_CARDTYPE } from "./SpecificConfig";
+import { PokerRuler } from "./Ruler";
 
 
-var ruler = new PokerCalculator();
+var ruler = new PokerRuler();
 let _res = ruler.checkCardType([0x4e,0x4f]);
 console.log(_res);

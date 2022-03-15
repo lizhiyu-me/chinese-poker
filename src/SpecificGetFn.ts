@@ -1,7 +1,7 @@
 
-import { T_PCL_CHECK_RES_FINAL } from './Ruler';
-import { I_TYPE_DATA, T_CHECK_RES } from "./Const";
-import { E_CARD_FACE, PCL_valueCountDic, ValueDic, TypeLevelDic, E_LEVEL, E_CARDTYPE, LimitValTypeArr, standardSerialArr } from "./SpecificConfig";
+import { T_CHECK_RES_FINAL } from './Ruler';
+import { T_TYPE_DATA, T_CHECK_RES, E_CARD_FACE, T_VALUE_ITEM } from "./Const";
+import { ValueCountDic, ValueDic, TypeLevelDic, E_TYPE_LEVEL, E_CARDTYPE, LimitOrderTypeArr, StandardSerialArr } from "./Config";
 
 /**获取游戏中计算用的牌值(与牌面显示有差别 e.g. 牌面值为2,游戏值为15) */
 export function getGameValue(serialNum: number): number {
@@ -23,16 +23,16 @@ export function getFaceValue(serialNum: number): number {
 
 /**获取当前valDic */
 export function getCurValueDic(arr: number[]): { [val: number]: number[] } {
-    let _PCL_valueDic: { [val: number]: number[] } = {};
+    let _valueDic: { [val: number]: number[] } = {};
     arr.forEach((num) => {
         let _val = getGameValue(num);
-        let _valItem: number[] = _PCL_valueDic[_val];
+        let _valItem: number[] = _valueDic[_val];
         if (!_valItem) {
-            _valItem = _PCL_valueDic[_val] = [];
+            _valItem = _valueDic[_val] = [];
         }
         _valItem.push(num);
     })
-    return _PCL_valueDic;
+    return _valueDic;
 }
 
 export function getSortedValArr(): number[] {
@@ -46,51 +46,34 @@ export function getSortedValArr(): number[] {
     return _arr.sort((a, b) => { return a - b });
 }
 export function getIsInTopLevel(type: E_CARDTYPE): boolean {
-    return TypeLevelDic[E_LEVEL.TOP].indexOf(type) != -1;
+    return TypeLevelDic[E_TYPE_LEVEL.TOP].indexOf(type) != -1;
 }
 
-
-export function getValItemVal(itemArr: number[]) {
-    return itemArr["d_val"];
-}
-export function getValItemLimitCount(itemArr: number[]) {
-    return itemArr["d_cnt"];
-}
-
-export function getCurArr_SortByVal(arr: number[]): number[][] {
-    let _resArr: number[][] = [];
-
+export function getSortedValueItemArr(arr: number[]): T_VALUE_ITEM[] {
+    let _resArr: T_VALUE_ITEM[] = [];
     let _valObj = getCurValueDic(arr);
     let _valArr = getSortedValArr();
-
     for (let val of _valArr) {
-        let _curValItem = _valObj[val] ? _valObj[val] : [];
-        _curValItem["d_val"] = +val;
-        _curValItem["d_cnt"] = PCL_valueCountDic[val];
-
-        _resArr.push(_curValItem);
+        let _item: T_VALUE_ITEM = {
+            value: +val,
+            count: ValueCountDic[val],
+            arr: _valObj[val] ? _valObj[val] : []
+        }
+        _resArr.push(_item);
     }
-
     return _resArr;
 }
 
 export function getIsLineLimitType(type: E_CARDTYPE): boolean {
-    return LimitValTypeArr.indexOf(type) != -1;
+    return LimitOrderTypeArr.indexOf(type) != -1;
 }
 
-/**获取类型定义 单套 数量 eg. 飞机带单 3+1 连对 2 四带两张 4+2*/
-export function getOneSetCountOfType(_typeDefinition: I_TYPE_DATA[]): number {
-    let _res: number = 0;
-    _typeDefinition.forEach((element, idx) => {
-        //英雄
-        if (idx == 0) {
-            _res += element.metaType;
-        }
-        //随从
-        else {
-            _res += element.metaType * element.minCount;
-        }
-    });
+/**Get type one set count, e.g. triple order take one: 3+1; double order: 2; quadruple take two: 4+2*/
+export function getOneSetCountOfType(typeDefinition: T_TYPE_DATA): number {
+    let _res: number = typeDefinition.metaType;
+    if (typeDefinition.subTypeData) {
+        _res += typeDefinition.subTypeData.count * typeDefinition.subTypeData.metaType;
+    }
     return _res;
 }
 export function getTotalCount(data: {
@@ -110,13 +93,13 @@ export function getTotalCount(data: {
 export function getPokerDicFromStandardPokerArr() {
     let _standardPokerDic: { [val: number]: number[] };
     return () => {
-        _standardPokerDic = getCurValueDic(standardSerialArr)
+        _standardPokerDic = getCurValueDic(StandardSerialArr)
         return _standardPokerDic;
     }
 }
 
 /**获取更大的炸弹 */
-export function getUpperBomb(_bombLevelRes: T_PCL_CHECK_RES_FINAL[], attackter: number[]): T_PCL_CHECK_RES_FINAL[] {
+export function getUpperBomb(_bombLevelRes: T_CHECK_RES_FINAL[], attackter: number[]): T_CHECK_RES_FINAL[] {
     let _res = [];
     let _attackterWeightVal = getGameValue(attackter[0]);
     for (let i = 0; i < _bombLevelRes.length; i++) {

@@ -14,7 +14,7 @@ export type T_ACCOMPANY_RULER = {
     itemCount: number,
     minCount: number
 }
-export class PokerRuler {
+export class Ruler {
     constructor() {
     }
     /**

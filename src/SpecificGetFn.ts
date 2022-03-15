@@ -1,17 +1,17 @@
 
 import { T_CHECK_RES_FINAL } from './Ruler';
-import { T_TYPE_DATA, T_CHECK_RES, E_CARD_FACE, T_VALUE_ITEM } from "./Const";
+import { T_TYPE_DATA, T_CHECK_RES, E_FACE, T_VALUE_ITEM } from "./Const";
 import { ValueCountDic, ValueDic, TypeLevelDic, E_TYPE_LEVEL, E_CARDTYPE, LimitOrderTypeArr, StandardSerialArr } from "./Config";
 
 /**获取游戏中计算用的牌值(与牌面显示有差别 e.g. 牌面值为2,游戏值为15) */
 export function getGameValue(serialNum: number): number {
-    let _faceVal: E_CARD_FACE = getFaceValue(serialNum);
+    let _faceVal: E_FACE = getFaceValue(serialNum);
     return ValueDic[_faceVal];
 }
 
 /**获取某个值的默认序列号 */
 export function getDefaultSerialByVal(val: number): number {
-    let _val_serialNumArr_Dic = getPokerDicFromStandardPokerArr()();
+    let _val_serialNumArr_Dic = getDicFromStandardArr()();
     let _valSerialNumArr = _val_serialNumArr_Dic[val];
     return _valSerialNumArr[0];
 }
@@ -90,22 +90,22 @@ export function getTotalCount(data: {
 }
 
 /**根据牌值从标准牌库获取牌序列号数组 */
-export function getPokerDicFromStandardPokerArr() {
-    let _standardPokerDic: { [val: number]: number[] };
+export function getDicFromStandardArr() {
+    let _standardSerialDic: { [val: number]: number[] };
     return () => {
-        _standardPokerDic = getCurValueDic(StandardSerialArr)
-        return _standardPokerDic;
+        _standardSerialDic = getCurValueDic(StandardSerialArr)
+        return _standardSerialDic;
     }
 }
 
 /**获取更大的炸弹 */
 export function getUpperBomb(_bombLevelRes: T_CHECK_RES_FINAL[], attackter: number[]): T_CHECK_RES_FINAL[] {
     let _res = [];
-    let _attackterWeightVal = getGameValue(attackter[0]);
+    let _attackterVal = getGameValue(attackter[0]);
     for (let i = 0; i < _bombLevelRes.length; i++) {
         const _resItem = _bombLevelRes[i];
-        let _weightVal = getGameValue(_resItem.hero.arr[0]);
-        if (_attackterWeightVal < _weightVal) _res.push(_resItem);
+        let _val = getGameValue(_resItem.hero.arr[0]);
+        if (_attackterVal < _val) _res.push(_resItem);
     }
     return _res;
 };

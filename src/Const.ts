@@ -32,7 +32,7 @@ export type T_VALUE_ITEM = {
     arr:number[]
 }
 
-export enum E_CARD_FACE {
+export enum E_FACE {
     ACE = 1,
     DEUCE,
     THREE,
@@ -50,18 +50,12 @@ export enum E_CARD_FACE {
     R_JOKER
 }
 
-export enum E_POKER_SUIT {
+export enum E_SUIT {
     NONE,
-    /**方块*/
     DIAMONDS,
-    /**梅花 */
     CLUBS,
-    /**红心 */
     HEARTS,
-    /**黑桃 */
     SPADES,
-    /**黑Joker */
     B_JOKER,
-    /**红Joker */
     R_JOKER
 }

@@ -72,7 +72,7 @@ export const ValueCountDic = {
     [ValueDic[E_FACE.R_JOKER]]: FaceSerialsDic[E_FACE.R_JOKER].length
 }
 
-export enum E_CARDTYPE {
+export enum E_TYPE {
     ERROR,
     DOUBLE_JOKER,
     QUADRUPLE,
@@ -97,71 +97,71 @@ export enum E_TYPE_LEVEL {
     TOP
 }
 
-export const TypeLevelDic: { [level: number]: E_CARDTYPE[] } = {
+export const TypeLevelDic: { [level: number]: E_TYPE[] } = {
     [E_TYPE_LEVEL.ONE]: [
-        E_CARDTYPE.SINGLE,
-        E_CARDTYPE.DOUBLE,
-        E_CARDTYPE.TRIPLE,
-        E_CARDTYPE.SINGLE_ORDER,
-        E_CARDTYPE.DOUBLE_ORDER,
-        E_CARDTYPE.TRIPLE_ORDER,
-        E_CARDTYPE.TRIPLE_TAKE_ONE,
-        E_CARDTYPE.TRIPLE_TAKE_TWO,
-        E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE,
-        E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO,
-        E_CARDTYPE.QUADRUPLE_TAKE_ONE,
-        E_CARDTYPE.QUADRUPLE_TAKE_TWO,
+        E_TYPE.SINGLE,
+        E_TYPE.DOUBLE,
+        E_TYPE.TRIPLE,
+        E_TYPE.SINGLE_ORDER,
+        E_TYPE.DOUBLE_ORDER,
+        E_TYPE.TRIPLE_ORDER,
+        E_TYPE.TRIPLE_TAKE_ONE,
+        E_TYPE.TRIPLE_TAKE_TWO,
+        E_TYPE.TRIPLE_ORDER_TAKE_ONE,
+        E_TYPE.TRIPLE_ORDER_TAKE_TWO,
+        E_TYPE.QUADRUPLE_TAKE_ONE,
+        E_TYPE.QUADRUPLE_TAKE_TWO,
     ],
     [E_TYPE_LEVEL.TWO]: [
-        E_CARDTYPE.QUADRUPLE
+        E_TYPE.QUADRUPLE
     ],
     [E_TYPE_LEVEL.TOP]: [
-        E_CARDTYPE.DOUBLE_JOKER
+        E_TYPE.DOUBLE_JOKER
     ]
 }
 
 export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
-    [E_CARDTYPE.SINGLE]: { metaType: E_META.ONE, count: 1 },
-    [E_CARDTYPE.DOUBLE]: { metaType: E_META.TWO, count: 1 },
-    [E_CARDTYPE.TRIPLE]: { metaType: E_META.THREE, count: 1 },
-    [E_CARDTYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, isIncrease: true },
-    [E_CARDTYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, isIncrease: true },
-    [E_CARDTYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
-    [E_CARDTYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
-    [E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE]: {
+    [E_TYPE.SINGLE]: { metaType: E_META.ONE, count: 1 },
+    [E_TYPE.DOUBLE]: { metaType: E_META.TWO, count: 1 },
+    [E_TYPE.TRIPLE]: { metaType: E_META.THREE, count: 1 },
+    [E_TYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, isIncrease: true },
+    [E_TYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, isIncrease: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
+    [E_TYPE.TRIPLE_ORDER_TAKE_ONE]: {
         metaType: E_META.THREE, minCount: 2, isIncrease: true,
         subTypeData: { metaType: E_META.ONE, count: 1 }
     },
-    [E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO]: {
+    [E_TYPE.TRIPLE_ORDER_TAKE_TWO]: {
         metaType: E_META.THREE, minCount: 2, isIncrease: true,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
-    [E_CARDTYPE.TRIPLE_TAKE_ONE]: {
+    [E_TYPE.TRIPLE_TAKE_ONE]: {
         metaType: E_META.THREE, count: 1,
         subTypeData: { metaType: E_META.ONE, count: 1 }
     },
-    [E_CARDTYPE.TRIPLE_TAKE_TWO]: {
+    [E_TYPE.TRIPLE_TAKE_TWO]: {
         metaType: E_META.THREE, count: 1,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
-    [E_CARDTYPE.QUADRUPLE_TAKE_ONE]: {
+    [E_TYPE.QUADRUPLE_TAKE_ONE]: {
         metaType: E_META.FOUR, count: 1,
         subTypeData: { metaType: E_META.ONE, count: 2 }
     },
-    [E_CARDTYPE.QUADRUPLE_TAKE_TWO]: {
+    [E_TYPE.QUADRUPLE_TAKE_TWO]: {
         metaType: E_META.FOUR, count: 1,
         subTypeData: { metaType: E_META.TWO, count: 2 }
     },
-    [E_CARDTYPE.QUADRUPLE]: { metaType: E_META.FOUR, count: 1 },
-    [E_CARDTYPE.DOUBLE_JOKER]: { metaType: E_META.ONE, count: 2, val: [FaceSerialsDic[E_FACE.B_JOKER][0], FaceSerialsDic[E_FACE.R_JOKER][0]] }
+    [E_TYPE.QUADRUPLE]: { metaType: E_META.FOUR, count: 1 },
+    [E_TYPE.DOUBLE_JOKER]: { metaType: E_META.ONE, count: 2, val: [FaceSerialsDic[E_FACE.B_JOKER][0], FaceSerialsDic[E_FACE.R_JOKER][0]] }
 }
 
 export const OrderTopLimitVal: number = ValueDic[E_FACE.ACE];
-export const LimitOrderTypeArr: E_CARDTYPE[] = [
-    E_CARDTYPE.SINGLE_ORDER,
-    E_CARDTYPE.DOUBLE_ORDER,
-    E_CARDTYPE.TRIPLE_ORDER,
-    E_CARDTYPE.TRIPLE_ORDER,
-    E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE,
-    E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO
+export const LimitOrderTypeArr: E_TYPE[] = [
+    E_TYPE.SINGLE_ORDER,
+    E_TYPE.DOUBLE_ORDER,
+    E_TYPE.TRIPLE_ORDER,
+    E_TYPE.TRIPLE_ORDER,
+    E_TYPE.TRIPLE_ORDER_TAKE_ONE,
+    E_TYPE.TRIPLE_ORDER_TAKE_TWO
 ]

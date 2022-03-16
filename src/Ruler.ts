@@ -1,14 +1,14 @@
 
-import { E_CARDTYPE, OrderTopLimitVal, TypeDefinition } from "./Config";
+import { E_TYPE, E_TYPE_LEVEL, OrderTopLimitVal, TypeDefinition, TypeLevelDic } from "./Config";
 import { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const";
 import { MetaProcessor } from "./MetaProcessor";
-import { getGameValue, getIsLineLimitType, getOneSetCountOfType, getSortedValueItemArr } from "./SpecificGetFn";
+import { getGameValue, getIsLineLimitType, getSortedValueItemArr } from "./SpecificGetFn";
 import Utils from "./utils/utils";
 
 export interface T_CHECK_RES_FINAL {
     main: T_CHECK_RES;
     subArr: T_CHECK_RES[];
-    type: E_CARDTYPE;
+    type: E_TYPE;
 }
 export type T_SUBTYPE_RULER = {
     beginIdx: number,
@@ -16,31 +16,7 @@ export type T_SUBTYPE_RULER = {
     minCount: number
 }
 export class Ruler {
-    constructor() {
-    }
-    /**
-     * 获取主规尺,按值从小到大排序
-     * @param attackterOrderArr e.g.[[6,6],[7,7],[8,8]]
-     */
-    private getMainRuler(attackterOrderArr: number[][]): { beginIdx: number, len: number, itemCount: number } {
-        let _resObj = <{ beginIdx: number, len: number, itemCount: number }>{};
-
-        let _min: number = Math.min(...attackterOrderArr.map((item) => { return getGameValue(item[0]) }));
-        let _beginIdx: number = _min - 3;
-        let _len: number = attackterOrderArr.length;
-        let _itemCount: number = attackterOrderArr[0].length;
-
-        _resObj.beginIdx = _beginIdx + 1;
-        _resObj.len = _len;
-        _resObj.itemCount = _itemCount;
-
-        return _resObj;
-    }
-
-    /**
-     * 测量主进攻者并获取迎击傀儡
-     * @param ownArr 
-     */
+    constructor() { }
     private getMainTypeResArr(ownArr: number[], type: number, ruler: {
         beginIdx: number;
         len: number;
@@ -58,9 +34,7 @@ export class Ruler {
             _sliceLen === len) {
             let _arr: number[] = [];
             _arr2Measure.forEach((item) => {
-                // let _tempFlag: boolean = true;
                 if (len >= 2 && getIsLineLimitType(type) && item.value > OrderTopLimitVal) return;
-                // if (!_tempFlag) return;
                 if (item.count >= itemCount) {
                     _arr = _arr.concat(item.arr.slice(0, itemCount));
                 }
@@ -113,69 +87,54 @@ export class Ruler {
         }
         return _res;
     }
-
-    getMainRulerDIY(beginIdx: number, type: number, totalCount: number): {
-        beginIdx: number;
-        len: number;
-        itemCount: number;
-    } {
-        let _define = TypeDefinition[type][0];
-        let _mainLen: number = totalCount / getOneSetCountOfType(TypeDefinition[type])
-        if (_mainLen % 1 != 0 || _mainLen < _define.minCount) return null;
-
-        return {
-            itemCount: _define.metaType,
-            beginIdx: beginIdx,
-            len: _define.minCount >= 2 ? _mainLen : 1
-        }
-    }
-
-    /**
-     * 获取从规尺
-     * @param attackterArr 
-     * - 仅支持带牌为一种元类型（目前牌型还未出现多种元类型）
-     */
-    getSubTypeRulerDIY(type: E_CARDTYPE): T_SUBTYPE_RULER {
-        let _resObj = {} as T_SUBTYPE_RULER;
-
-        let _define = TypeDefinition[type][1];
-        if (!_define) return null;
-
-        _resObj.beginIdx = 0;
-        _resObj.itemCount = _define.metaType;
-        _resObj.minCount = _define.minCount;
-        return _resObj;
-    }
-
-    public canDefeat(deffensiveItemArr: number[], attackter: number[], type: number)
-    // : { type: E_CARDTYPE, can: boolean }
-    {
-        /* let _tempRes = this.tipAllLevel(deffensiveItemArr, attackter, type);
-        if (_tempRes.length != 0) {
-            for (let i = 0; i < _tempRes.length; i++) {
-                const _item = _tempRes[i];
-                let _count = getTotalCount(_item);
-                let _type = _item.type;
-                if (_count == deffensiveItemArr.length) return {
-                    type: _type,
-                    can: true
-                }
+    private getTypeLevel(type: E_TYPE): E_TYPE_LEVEL {
+        for (const level in TypeLevelDic) {
+            if (TypeLevelDic[level].indexOf(type) != -1) {
+                return +level;
             }
         }
-        return {
-            type: null,
-            can: false
-        }; */
+    }
+    canDefeat(handSerialArr: number[], attackerArr: number[], attackerType: number): boolean {
+        let _handType = this.checkCardType(handSerialArr);
+        if (_handType == E_TYPE.ERROR) return false;
+        let _handTypeLevel = this.getTypeLevel(_handType);
+        let _attackerTypeLevel = this.getTypeLevel(attackerType);
+        //top level type have only one to play in a game round
+        if (_attackerTypeLevel != _handTypeLevel) return _handTypeLevel > _attackerTypeLevel;
+        else if (_handTypeLevel == E_TYPE_LEVEL.ONE) {
+            if (handSerialArr.length != attackerArr.length) return false;
+            let _typeDef = TypeDefinition[attackerType];
+            let _mainTypeContainCount = _typeDef.metaType;
+            let _oneSetCount = this.getOneSetCount(_typeDef);
+            let _attackerMainTypeResArr = this.getMainTypeResArr(attackerArr, attackerType, {
+                beginIdx: 0,
+                len: attackerArr.length / _oneSetCount,
+                itemCount: _mainTypeContainCount
+            });
+            let _beginIdx = getGameValue(_attackerMainTypeResArr[0].arr[0]) - 2;
+            let _handMainTypeResArr = this.getMainTypeResArr(handSerialArr, _handType, {
+                beginIdx: _beginIdx,
+                len: handSerialArr.length / _oneSetCount,
+                itemCount: _mainTypeContainCount
+            });
+            if (_handMainTypeResArr.length != 0) return true;
+        } else if (_handTypeLevel == E_TYPE_LEVEL.TWO) {
+            let _handVal = getGameValue(handSerialArr[0]);
+            let _attackerVal = getGameValue(attackerArr[0]);
+            return _handVal > _attackerVal;
+        }
+        return false;
     }
 
-    checkCardType(serialArr: number[]): E_CARDTYPE {
-        for (const e in E_CARDTYPE) {
-            let _e: E_CARDTYPE = +e;
-            if (isNaN(_e) || _e == E_CARDTYPE.ERROR) continue;
+    checkCardType(serialArr: number[]): E_TYPE {
+        for (const e in E_TYPE) {
+            let _e: E_TYPE = +e;
+            if (isNaN(_e) || _e == E_TYPE.ERROR) continue;
             else if (this.isType(serialArr, _e)) return _e;
         }
-        return E_CARDTYPE.ERROR;
+        return E_TYPE.ERROR;
     }
+    /**Get type one set count, e.g. triple order take one: 3+1; double order: 2; quadruple take two: 4+2*/
     private getOneSetCount(def: T_TYPE_DATA): number {
         let _mainTypeCount = def.metaType;
         let _subTypeCount = def.subTypeData ? def.subTypeData.metaType * def.subTypeData.count : 0;
@@ -187,13 +146,13 @@ export class Ruler {
             let _minCount = def.minCount * (def.metaType + _subTypeCount);
             if (serialsTotalCount < _minCount) return false;
         } else if (def.count) {
-            let _certainCount = def.count * def.metaType+_subTypeCount;
+            let _certainCount = def.count * def.metaType + _subTypeCount;
             if (serialsTotalCount != _certainCount) return false;
         }
         if (setCount % 1) return false;
         return true;
     }
-    private isType(serialArr: number[], type: E_CARDTYPE): boolean {
+    private isType(serialArr: number[], type: E_TYPE): boolean {
         let _def = TypeDefinition[type];
         let _serialsTotalCount = serialArr.length;
         let _oneSetCount = this.getOneSetCount(_def);
@@ -220,7 +179,7 @@ export class Ruler {
                     let _subTypeResArr = this.getSubTypeResArr(_serialsExcludeMainType, {
                         itemCount: _def.subTypeData.metaType
                     }, _def.subTypeData.count, _setCount);
-                    if (_subTypeResArr.length == _setCount*_def.subTypeData.count) return true;
+                    if (_subTypeResArr.length == _setCount * _def.subTypeData.count) return true;
                 }
                 return false;
             }

@@ -6,11 +6,7 @@ export enum E_META {
     ONE,
     TWO,
     THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
+    FOUR
 }
 /**
  * - count and minCount won't exist at the same time

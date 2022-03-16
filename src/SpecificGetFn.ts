@@ -104,7 +104,7 @@ export function getUpperBomb(_bombLevelRes: T_CHECK_RES_FINAL[], attackter: numb
     let _attackterVal = getGameValue(attackter[0]);
     for (let i = 0; i < _bombLevelRes.length; i++) {
         const _resItem = _bombLevelRes[i];
-        let _val = getGameValue(_resItem.hero.arr[0]);
+        let _val = getGameValue(_resItem.main.arr[0]);
         if (_attackterVal < _val) _res.push(_resItem);
     }
     return _res;

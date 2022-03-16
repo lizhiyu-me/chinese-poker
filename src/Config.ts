@@ -74,6 +74,8 @@ export const ValueCountDic = {
 
 export enum E_CARDTYPE {
     ERROR,
+    DOUBLE_JOKER,
+    QUADRUPLE,
     SINGLE,
     DOUBLE,
     TRIPLE,
@@ -85,9 +87,7 @@ export enum E_CARDTYPE {
     TRIPLE_ORDER_TAKE_ONE,
     TRIPLE_ORDER_TAKE_TWO,
     QUADRUPLE_TAKE_ONE,
-    QUADRUPLE_TAKE_TWO,
-    QUADRUPLE,
-    DOUBLE_JOKER
+    QUADRUPLE_TAKE_TWO
 }
 
 export enum E_TYPE_LEVEL {

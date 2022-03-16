@@ -1,16 +1,16 @@
 
-import { T_TYPE_DATA, T_CHECK_RES, T_VALUE_ITEM } from "./Const";
-import { MetaProcessor } from "./MetaProcessor";
 import { E_CARDTYPE, OrderTopLimitVal, TypeDefinition } from "./Config";
-import { getSortedValueItemArr, getGameValue, getIsLineLimitType, getOneSetCountOfType, getSortedValArr } from "./SpecificGetFn";
+import { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const";
+import { MetaProcessor } from "./MetaProcessor";
+import { getGameValue, getIsLineLimitType, getOneSetCountOfType, getSortedValueItemArr } from "./SpecificGetFn";
 import Utils from "./utils/utils";
 
 export interface T_CHECK_RES_FINAL {
-    hero: T_CHECK_RES;
-    accompanyArr: T_CHECK_RES[];
+    main: T_CHECK_RES;
+    subArr: T_CHECK_RES[];
     type: E_CARDTYPE;
 }
-export type T_ACCOMPANY_RULER = {
+export type T_SUBTYPE_RULER = {
     beginIdx: number,
     itemCount: number,
     minCount: number
@@ -22,7 +22,7 @@ export class Ruler {
      * 获取主规尺,按值从小到大排序
      * @param attackterOrderArr e.g.[[6,6],[7,7],[8,8]]
      */
-    private getHeroRuler(attackterOrderArr: number[][]): { beginIdx: number, len: number, itemCount: number } {
+    private getMainRuler(attackterOrderArr: number[][]): { beginIdx: number, len: number, itemCount: number } {
         let _resObj = <{ beginIdx: number, len: number, itemCount: number }>{};
 
         let _min: number = Math.min(...attackterOrderArr.map((item) => { return getGameValue(item[0]) }));
@@ -41,7 +41,7 @@ export class Ruler {
      * 测量主进攻者并获取迎击傀儡
      * @param ownArr 
      */
-    private getHeroArr(ownArr: number[], type: number, ruler: {
+    private getMainTypeResArr(ownArr: number[], type: number, ruler: {
         beginIdx: number;
         len: number;
         itemCount: number;
@@ -75,20 +75,14 @@ export class Ruler {
         }
         return _res;
     }
-    /**
-     * 获取迎击傀儡元类型，未进行数量匹配组合(获取相同元类型，未进行大小比较)
-     * @param ownArr 
-     * @param attacktAccompanyRuler 
-     */
-    private getAccompany(ownArrExcludeHero: number[], attacktAccompanyRuler: { itemCount: number }, accompanyCount: number, setCount: number)
-        : T_CHECK_RES[] {
-        let _accompanyCount: number = accompanyCount;
-        if (_accompanyCount === 0) return [];
+    private getSubTypeResArr(ownArrExcludeMain: number[], attacktSubTypeRuler: { itemCount: number }, subTypeCount: number, setCount: number): T_CHECK_RES[] {
+        let _subTypeCount: number = subTypeCount;
+        if (_subTypeCount === 0) return [];
         let _res: T_CHECK_RES[] = [];
 
-        let _curArr: T_VALUE_ITEM[] = getSortedValueItemArr(ownArrExcludeHero);
+        let _curArr: T_VALUE_ITEM[] = getSortedValueItemArr(ownArrExcludeMain);
 
-        let itemCount = attacktAccompanyRuler.itemCount;
+        let itemCount = attacktSubTypeRuler.itemCount;
 
         /**按值由小到大排列 */
         let _metaProcessorArr: MetaProcessor[] = (() => {
@@ -120,19 +114,19 @@ export class Ruler {
         return _res;
     }
 
-    getHeroRulerDIY(beginIdx: number, type: number, totalCount: number): {
+    getMainRulerDIY(beginIdx: number, type: number, totalCount: number): {
         beginIdx: number;
         len: number;
         itemCount: number;
     } {
         let _define = TypeDefinition[type][0];
-        let _heroLen: number = totalCount / getOneSetCountOfType(TypeDefinition[type])
-        if (_heroLen % 1 != 0 || _heroLen < _define.minCount) return null;
+        let _mainLen: number = totalCount / getOneSetCountOfType(TypeDefinition[type])
+        if (_mainLen % 1 != 0 || _mainLen < _define.minCount) return null;
 
         return {
             itemCount: _define.metaType,
             beginIdx: beginIdx,
-            len: _define.minCount >= 2 ? _heroLen : 1
+            len: _define.minCount >= 2 ? _mainLen : 1
         }
     }
 
@@ -141,8 +135,8 @@ export class Ruler {
      * @param attackterArr 
      * - 仅支持带牌为一种元类型（目前牌型还未出现多种元类型）
      */
-    getAccompanyRulerDIY(type: E_CARDTYPE): T_ACCOMPANY_RULER {
-        let _resObj = {} as T_ACCOMPANY_RULER;
+    getSubTypeRulerDIY(type: E_CARDTYPE): T_SUBTYPE_RULER {
+        let _resObj = {} as T_SUBTYPE_RULER;
 
         let _define = TypeDefinition[type][1];
         if (!_define) return null;
@@ -175,25 +169,12 @@ export class Ruler {
     }
 
     checkCardType(serialArr: number[]): E_CARDTYPE {
-        let _types = Object.keys(E_CARDTYPE);
-        /* let _valueItemArr: T_VALUE_ITEM[] = getSortedValueItemArr(serialArr);
-        let _metaProcessorArr: MetaProcessor[] = (() => {
-            let _res = [];
-            for (const item of _valueItemArr) {
-                let _metaProcessor = new MetaProcessor(item.arr);
-                _metaProcessor.setVal(item.value);
-                _res.push(_metaProcessor);
-            }
-            return _res;
-        })() */
-        for (let i = 0; i < _types.length; i++) {
-            const _type = _types[i];
-            if (!isNaN(parseInt(_type)) && +_type != E_CARDTYPE.ERROR) {
-                let _isType = this.isType(serialArr, +_type);
-                if (_isType) return +_type;
-            }
+        for (const e in E_CARDTYPE) {
+            let _e: E_CARDTYPE = +e;
+            if (isNaN(_e) || _e == E_CARDTYPE.ERROR) continue;
+            else if (this.isType(serialArr, _e)) return _e;
         }
-        return null;
+        return E_CARDTYPE.ERROR;
     }
     private getOneSetCount(def: T_TYPE_DATA): number {
         let _mainTypeCount = def.metaType;
@@ -201,19 +182,18 @@ export class Ruler {
         return _subTypeCount + _mainTypeCount;
     }
     private isCountOK(def: T_TYPE_DATA, serialsTotalCount: number, setCount: number): boolean {
-
+        let _subTypeCount = def.subTypeData ? def.subTypeData.metaType * def.subTypeData.count : 0;
         if (def.minCount) {
-            let _subTypeCount = def.subTypeData ? def.subTypeData.metaType * def.subTypeData.count : 0;
             let _minCount = def.minCount * (def.metaType + _subTypeCount);
             if (serialsTotalCount < _minCount) return false;
         } else if (def.count) {
-            let _certainCount = def.count * def.metaType;
+            let _certainCount = def.count * def.metaType+_subTypeCount;
             if (serialsTotalCount != _certainCount) return false;
         }
         if (setCount % 1) return false;
         return true;
     }
-    public isType(serialArr: number[], type: E_CARDTYPE): boolean {
+    private isType(serialArr: number[], type: E_CARDTYPE): boolean {
         let _def = TypeDefinition[type];
         let _serialsTotalCount = serialArr.length;
         let _oneSetCount = this.getOneSetCount(_def);
@@ -223,58 +203,27 @@ export class Ruler {
         if (_def.val) {
             return Utils.arraysEqual(serialArr, _def.val);
         } else {
-            /* let _count = _def.count;
-            let _minCount = _def.minCount;
-            let _isIncrease = _def.isIncrease; */
             let _mainItemContainCount = _def.metaType;
             let _hasSubType = !!_def.subTypeData;
 
-            let _hero = this.getHeroArr(serialArr, type, {
+            let _mainTypeResArr = this.getMainTypeResArr(serialArr, type, {
                 beginIdx: 0,
                 len: _setCount,
                 itemCount: _mainItemContainCount
             });
-            if (_hero.length == 0) return false;
+            if (_mainTypeResArr.length == 0) return false;
             else if (!_hasSubType) return true;
             else {
-                for (let i = 0; i < _hero.length; i++) {
-                    const _heroSerialArr = _hero[i];
-                    let _serialsExcludeHero = Utils.removeArrFromArr(serialArr,_heroSerialArr.arr);
-                    let _accompanySerialArr = this.getAccompany(_serialsExcludeHero, {
+                for (let i = 0; i < _mainTypeResArr.length; i++) {
+                    const _mainTypeSerialArr = _mainTypeResArr[i];
+                    let _serialsExcludeMainType = Utils.removeArrFromArr(serialArr, _mainTypeSerialArr.arr);
+                    let _subTypeResArr = this.getSubTypeResArr(_serialsExcludeMainType, {
                         itemCount: _def.subTypeData.metaType
                     }, _def.subTypeData.count, _setCount);
-                    if (_accompanySerialArr.length == _setCount) return true;
+                    if (_subTypeResArr.length == _setCount*_def.subTypeData.count) return true;
                 }
+                return false;
             }
-
-            /* if (!_hasSubType) {
-                let _isStreak = true;
-                let _haveFindFirst = false;
-                for (let i = 0; i < metaProcessorArrCloned.length; i++) {
-                    const _metaProcessor = metaProcessorArrCloned[i];
-                    let _metaData: number[][] = _metaProcessor.getMeta(_mainItemContainCount);
-                    if (!_isIncrease) {
-                        if (_metaData.length != 0) {
-                            for (let i = 0; i < _metaData.length; i++) {
-                                _serialsTotalCount -= _mainItemContainCount;
-                                if (_serialsTotalCount == 0) return true;
-                            }
-                        }
-                    } else {
-                        if (_metaData.length != 0) {
-                            _haveFindFirst = true;
-                            for (let i = 0; i < _metaData.length; i++) {
-                                _serialsTotalCount -= _mainItemContainCount;
-                                if (_serialsTotalCount == 0) return true;
-                            }
-                        } else {
-                            if (_haveFindFirst) return false;
-                        }
-                    }
-
-                }
-            } */
-
         }
     }
 }

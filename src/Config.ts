@@ -1,5 +1,5 @@
 
-import { T_TYPE_DATA, E_META, E_RELATION, E_FACE } from "./Const";
+import { T_TYPE_DATA, E_META, E_FACE } from "./Const";
 
 export const StandardSerialArr = [
     0x03, 0x13, 0x23, 0x33,
@@ -80,11 +80,10 @@ export enum E_CARDTYPE {
     SINGLE_ORDER,
     DOUBLE_ORDER,
     TRIPLE_ORDER,
-    THRIPLE_TAKE_ONE,
-    THRIPLE_TAKE_TWO,
-    THRIPLE_ORDER,
-    THRIPLE_ORDER_TAKE_ONE,
-    THRIPLE_ORDER_TAKE_TWO,
+    TRIPLE_TAKE_ONE,
+    TRIPLE_TAKE_TWO,
+    TRIPLE_ORDER_TAKE_ONE,
+    TRIPLE_ORDER_TAKE_TWO,
     QUADRUPLE_TAKE_ONE,
     QUADRUPLE_TAKE_TWO,
     QUADRUPLE,
@@ -106,11 +105,10 @@ export const TypeLevelDic: { [level: number]: E_CARDTYPE[] } = {
         E_CARDTYPE.SINGLE_ORDER,
         E_CARDTYPE.DOUBLE_ORDER,
         E_CARDTYPE.TRIPLE_ORDER,
-        E_CARDTYPE.THRIPLE_TAKE_ONE,
-        E_CARDTYPE.THRIPLE_TAKE_TWO,
-        E_CARDTYPE.THRIPLE_ORDER,
-        E_CARDTYPE.THRIPLE_ORDER_TAKE_ONE,
-        E_CARDTYPE.THRIPLE_ORDER_TAKE_TWO,
+        E_CARDTYPE.TRIPLE_TAKE_ONE,
+        E_CARDTYPE.TRIPLE_TAKE_TWO,
+        E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE,
+        E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO,
         E_CARDTYPE.QUADRUPLE_TAKE_ONE,
         E_CARDTYPE.QUADRUPLE_TAKE_TWO,
     ],
@@ -126,23 +124,23 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
     [E_CARDTYPE.SINGLE]: { metaType: E_META.ONE, count: 1 },
     [E_CARDTYPE.DOUBLE]: { metaType: E_META.TWO, count: 1 },
     [E_CARDTYPE.TRIPLE]: { metaType: E_META.THREE, count: 1 },
-    [E_CARDTYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, relation: E_RELATION.INCREASE },
-    [E_CARDTYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, relation: E_RELATION.INCREASE },
-    [E_CARDTYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, relation: E_RELATION.INCREASE },
-    [E_CARDTYPE.THRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, relation: E_RELATION.INCREASE },
-    [E_CARDTYPE.THRIPLE_ORDER_TAKE_ONE]: {
-        metaType: E_META.THREE, minCount: 2, relation: E_RELATION.INCREASE,
+    [E_CARDTYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, isIncrease: true },
+    [E_CARDTYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, isIncrease: true },
+    [E_CARDTYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
+    [E_CARDTYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
+    [E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE]: {
+        metaType: E_META.THREE, minCount: 2, isIncrease: true,
         subTypeData: { metaType: E_META.ONE, count: 1 }
     },
-    [E_CARDTYPE.THRIPLE_ORDER_TAKE_TWO]: {
-        metaType: E_META.THREE, minCount: 2, relation: E_RELATION.INCREASE,
+    [E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO]: {
+        metaType: E_META.THREE, minCount: 2, isIncrease: true,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
-    [E_CARDTYPE.THRIPLE_TAKE_ONE]: {
+    [E_CARDTYPE.TRIPLE_TAKE_ONE]: {
         metaType: E_META.THREE, count: 1,
         subTypeData: { metaType: E_META.ONE, count: 1 }
     },
-    [E_CARDTYPE.THRIPLE_TAKE_TWO]: {
+    [E_CARDTYPE.TRIPLE_TAKE_TWO]: {
         metaType: E_META.THREE, count: 1,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
@@ -155,15 +153,15 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
         subTypeData: { metaType: E_META.TWO, count: 2 }
     },
     [E_CARDTYPE.QUADRUPLE]: { metaType: E_META.FOUR, count: 1 },
-    [E_CARDTYPE.DOUBLE_JOKER]: { val: [FaceSerialsDic[E_FACE.B_JOKER][0], FaceSerialsDic[E_FACE.R_JOKER][0]] }
+    [E_CARDTYPE.DOUBLE_JOKER]: { metaType: E_META.ONE, count: 2, val: [FaceSerialsDic[E_FACE.B_JOKER][0], FaceSerialsDic[E_FACE.R_JOKER][0]] }
 }
 
-export const OrderLimitVal: number = ValueDic[E_FACE.ACE];
+export const OrderTopLimitVal: number = ValueDic[E_FACE.ACE];
 export const LimitOrderTypeArr: E_CARDTYPE[] = [
     E_CARDTYPE.SINGLE_ORDER,
     E_CARDTYPE.DOUBLE_ORDER,
     E_CARDTYPE.TRIPLE_ORDER,
-    E_CARDTYPE.THRIPLE_ORDER,
-    E_CARDTYPE.THRIPLE_ORDER_TAKE_ONE,
-    E_CARDTYPE.THRIPLE_ORDER_TAKE_TWO
+    E_CARDTYPE.TRIPLE_ORDER,
+    E_CARDTYPE.TRIPLE_ORDER_TAKE_ONE,
+    E_CARDTYPE.TRIPLE_ORDER_TAKE_TWO
 ]

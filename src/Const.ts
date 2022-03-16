@@ -12,24 +12,21 @@ export enum E_META {
     SEVEN,
     EIGHT,
 }
-export enum E_RELATION {
-    NONE,
-    EQUAL,
-    INCREASE,
-    DECREASE,
-}
+/**
+ * - count and minCount won't exist at the same time
+**/
 export type T_TYPE_DATA = {
     metaType?: E_META,
-    minCount?: number,
     count?: number,
-    relation?: E_RELATION,
+    minCount?: number,
+    isIncrease?: boolean,
     val?: number[],
     subTypeData?: { metaType: E_META, count: number }
 }
 export type T_VALUE_ITEM = {
-    value:number,
-    count:number,
-    arr:number[]
+    value: number,
+    count: number,
+    arr: number[]
 }
 
 export enum E_FACE {

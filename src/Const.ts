@@ -9,13 +9,13 @@ export enum E_META {
     FOUR
 }
 /**
- * - count and minCount won't exist at the same time
+ * - property count and minCount won't exist at the same time
 **/
 export type T_TYPE_DATA = {
     metaType?: E_META,
     count?: number,
     minCount?: number,
-    isIncrease?: boolean,
+    increment?: boolean,
     val?: number[],
     subTypeData?: { metaType: E_META, count: number }
 }

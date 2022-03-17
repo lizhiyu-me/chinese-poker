@@ -2,13 +2,11 @@
 import { E_TYPE, E_TYPE_LEVEL, LimitOrderTypeArr, TypeLevelDic, ValueCountDic, ValueDic } from "./Config";
 import { E_FACE, T_VALUE_ITEM } from "./Const";
 
-/**获取游戏中计算用的牌值(与牌面显示有差别 e.g. 牌面值为2,游戏值为15) */
 export function getGameValue(serialNum: number): number {
     let _faceVal: E_FACE = getFaceValue(serialNum);
     return ValueDic[_faceVal];
 }
 
-/**获取牌面值 */
 export function getFaceValue(serialNum: number): number {
     return serialNum % 0x10;
 }
@@ -36,6 +34,7 @@ export function getSortedValArr(): number[] {
     }
     return _arr.sort((a, b) => { return a - b });
 }
+
 export function getIsInTopLevel(type: E_TYPE): boolean {
     return TypeLevelDic[E_TYPE_LEVEL.TOP].indexOf(type) != -1;
 }

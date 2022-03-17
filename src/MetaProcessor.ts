@@ -4,8 +4,7 @@ import { E_META } from "./Const";
 export class MetaProcessor {
     private mMetaLib: { [count: number]: number[][] } = {};
     /**
-     * 
-     * @param arr same value serials 
+     * @param arr serials with same value 
      */
     constructor(arr: number[]) {
         this.load(arr);
@@ -16,10 +15,10 @@ export class MetaProcessor {
     }
 
     private _val: number;
-    getVal(): number {
+    get val(): number {
         return this._val;
     }
-    setVal(v: number) {
+    set val(v: number) {
         this._val = v;
     }
 

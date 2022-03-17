@@ -17,6 +17,7 @@ export type T_SUBTYPE_RULER = {
 }
 export class Ruler {
     constructor() { }
+
     private getMainTypeResArr(ownArr: number[], type: number, ruler: {
         beginIdx: number;
         len: number;
@@ -49,26 +50,12 @@ export class Ruler {
         }
         return _res;
     }
+
     private getSubTypeResArr(ownArrExcludeMain: number[], attacktSubTypeRuler: { itemCount: number }, subTypeCount: number, setCount: number): T_CHECK_RES[] {
-        let _subTypeCount: number = subTypeCount;
-        if (_subTypeCount === 0) return [];
+        if (subTypeCount === 0) return [];
         let _res: T_CHECK_RES[] = [];
-
-        let _curArr: T_VALUE_ITEM[] = getSortedValueItemArr(ownArrExcludeMain);
-
         let itemCount = attacktSubTypeRuler.itemCount;
-
-        /**按值由小到大排列 */
-        let _metaProcessorArr: MetaProcessor[] = (() => {
-            let _res = [];
-            for (const item of _curArr) {
-                let _metaProcessor = new MetaProcessor(item.arr);
-                _metaProcessor.setVal(item.value);
-                _res.push(_metaProcessor);
-            }
-            return _res;
-        })()
-
+        let _metaProcessorArr = this.getMetaProcessors(ownArrExcludeMain);
         for (let i = 0; i < _metaProcessorArr.length; i++) {
             const _metaProcessor = _metaProcessorArr[i];
             let _fulfiledItem: number[][] = _metaProcessor.getMeta(itemCount);
@@ -87,6 +74,18 @@ export class Ruler {
         }
         return _res;
     }
+
+    private getMetaProcessors(serials: number[]): MetaProcessor[] {
+        let _curArr: T_VALUE_ITEM[] = getSortedValueItemArr(serials);
+        let _res = [];
+        for (const item of _curArr) {
+            let _metaProcessor = new MetaProcessor(item.arr);
+            _metaProcessor.val = item.value;
+            _res.push(_metaProcessor);
+        }
+        return _res;
+    }
+
     private getTypeLevel(type: E_TYPE): E_TYPE_LEVEL {
         for (const level in TypeLevelDic) {
             if (TypeLevelDic[level].indexOf(type) != -1) {
@@ -94,6 +93,7 @@ export class Ruler {
             }
         }
     }
+
     canDefeat(handSerialArr: number[], attackerArr: number[], attackerType: number): boolean {
         let _handType = this.checkCardType(handSerialArr);
         if (_handType == E_TYPE.ERROR) return false;
@@ -134,24 +134,33 @@ export class Ruler {
         }
         return E_TYPE.ERROR;
     }
-    /**Get type one set count, e.g. triple order take one: 3+1; double order: 2; quadruple take two: 4+2*/
+
+    /**Get type one set count
+     * @example ```
+     * - TRIPLE_ORDER_TAKE_ONE: 3+1;
+     * - DOUBLE_ORDER: 2;
+     * - QUADRUPLE_TAKE_TWO_SINGLE: 4+2;
+     * ```
+     * */
     private getOneSetCount(def: T_TYPE_DATA): number {
         let _mainTypeCount = def.metaType;
         let _subTypeCount = def.subTypeData ? def.subTypeData.metaType * def.subTypeData.count : 0;
         return _subTypeCount + _mainTypeCount;
     }
+
     private isCountOK(def: T_TYPE_DATA, serialsTotalCount: number, setCount: number): boolean {
         let _subTypeCount = def.subTypeData ? def.subTypeData.metaType * def.subTypeData.count : 0;
-        if (def.minCount) {
+        if (setCount % 1) return false;
+        else if (def.minCount) {
             let _minCount = def.minCount * (def.metaType + _subTypeCount);
             if (serialsTotalCount < _minCount) return false;
         } else if (def.count) {
             let _certainCount = def.count * def.metaType + _subTypeCount;
             if (serialsTotalCount != _certainCount) return false;
         }
-        if (setCount % 1) return false;
         return true;
     }
+
     private isType(serialArr: number[], type: E_TYPE): boolean {
         let _def = TypeDefinition[type];
         let _serialsTotalCount = serialArr.length;
@@ -176,13 +185,11 @@ export class Ruler {
                 for (let i = 0; i < _mainTypeResArr.length; i++) {
                     const _mainTypeSerialArr = _mainTypeResArr[i];
                     let _serialsExcludeMainType = Utils.removeArrFromArr(serialArr, _mainTypeSerialArr.arr);
-                    let _subTypeResArr = this.getSubTypeResArr(_serialsExcludeMainType, {
-                        itemCount: _def.subTypeData.metaType
-                    }, _def.subTypeData.count, _setCount);
+                    let _subTypeResArr = this.getSubTypeResArr(_serialsExcludeMainType, { itemCount: _def.subTypeData.metaType }, _def.subTypeData.count, _setCount);
                     if (_subTypeResArr.length == _setCount * _def.subTypeData.count) return true;
                 }
-                return false;
             }
         }
+        return false;
     }
 }

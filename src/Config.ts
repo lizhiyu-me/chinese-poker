@@ -86,8 +86,8 @@ export enum E_TYPE {
     TRIPLE_TAKE_TWO,
     TRIPLE_ORDER_TAKE_ONE,
     TRIPLE_ORDER_TAKE_TWO,
-    QUADRUPLE_TAKE_ONE,
-    QUADRUPLE_TAKE_TWO
+    QUADRUPLE_TAKE_TWO_SINGLE,
+    QUADRUPLE_TAKE_TWO_DOUBLE
 }
 
 export enum E_TYPE_LEVEL {
@@ -109,8 +109,8 @@ export const TypeLevelDic: { [level: number]: E_TYPE[] } = {
         E_TYPE.TRIPLE_TAKE_TWO,
         E_TYPE.TRIPLE_ORDER_TAKE_ONE,
         E_TYPE.TRIPLE_ORDER_TAKE_TWO,
-        E_TYPE.QUADRUPLE_TAKE_ONE,
-        E_TYPE.QUADRUPLE_TAKE_TWO,
+        E_TYPE.QUADRUPLE_TAKE_TWO_SINGLE,
+        E_TYPE.QUADRUPLE_TAKE_TWO_DOUBLE,
     ],
     [E_TYPE_LEVEL.TWO]: [
         E_TYPE.QUADRUPLE
@@ -124,16 +124,16 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
     [E_TYPE.SINGLE]: { metaType: E_META.ONE, count: 1 },
     [E_TYPE.DOUBLE]: { metaType: E_META.TWO, count: 1 },
     [E_TYPE.TRIPLE]: { metaType: E_META.THREE, count: 1 },
-    [E_TYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, isIncrease: true },
-    [E_TYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, isIncrease: true },
-    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
-    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, isIncrease: true },
+    [E_TYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, increment: true },
+    [E_TYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, increment: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
     [E_TYPE.TRIPLE_ORDER_TAKE_ONE]: {
-        metaType: E_META.THREE, minCount: 2, isIncrease: true,
+        metaType: E_META.THREE, minCount: 2, increment: true,
         subTypeData: { metaType: E_META.ONE, count: 1 }
     },
     [E_TYPE.TRIPLE_ORDER_TAKE_TWO]: {
-        metaType: E_META.THREE, minCount: 2, isIncrease: true,
+        metaType: E_META.THREE, minCount: 2, increment: true,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
     [E_TYPE.TRIPLE_TAKE_ONE]: {
@@ -144,11 +144,11 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
         metaType: E_META.THREE, count: 1,
         subTypeData: { metaType: E_META.TWO, count: 1 }
     },
-    [E_TYPE.QUADRUPLE_TAKE_ONE]: {
+    [E_TYPE.QUADRUPLE_TAKE_TWO_SINGLE]: {
         metaType: E_META.FOUR, count: 1,
         subTypeData: { metaType: E_META.ONE, count: 2 }
     },
-    [E_TYPE.QUADRUPLE_TAKE_TWO]: {
+    [E_TYPE.QUADRUPLE_TAKE_TWO_DOUBLE]: {
         metaType: E_META.FOUR, count: 1,
         subTypeData: { metaType: E_META.TWO, count: 2 }
     },

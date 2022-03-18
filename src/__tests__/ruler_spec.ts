@@ -1,5 +1,5 @@
 import { E_TYPE } from "../Config";
-import { Ruler } from "../Ruler";
+import {Ruler} from "../Ruler";
 
 var ruler = new Ruler();
 
@@ -27,6 +27,6 @@ describe('type-check', () => {
 
 describe('can-defeat', () => {
     it('DOUBLE_JOKER vs SINGLE', () => {
-        expect(ruler.canDefeat([0x4e, 0x4f], [0x01], E_TYPE.SINGLE)).toBe(true);
+        expect(ruler.canDefeat([0x4e, 0x4f], [0x01], E_TYPE.SINGLE).can).toBe(true);
     })
 })

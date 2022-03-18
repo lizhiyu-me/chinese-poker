@@ -94,36 +94,51 @@ export class Ruler {
         }
     }
 
-    canDefeat(handSerialArr: number[], attackerArr: number[], attackerType: number): boolean {
+    canDefeat(handSerialArr: number[], attackerArr: number[], attackerType: number): { can: boolean, type: E_TYPE } {
+        let can = false, type = E_TYPE.ERROR;
         let _handType = this.checkCardType(handSerialArr);
-        if (_handType == E_TYPE.ERROR) return false;
-        let _handTypeLevel = this.getTypeLevel(_handType);
-        let _attackerTypeLevel = this.getTypeLevel(attackerType);
-        //top level type have only one to play in a game round
-        if (_attackerTypeLevel != _handTypeLevel) return _handTypeLevel > _attackerTypeLevel;
-        else if (_handTypeLevel == E_TYPE_LEVEL.ONE) {
-            if (handSerialArr.length != attackerArr.length) return false;
-            let _typeDef = TypeDefinition[attackerType];
-            let _mainTypeContainCount = _typeDef.metaType;
-            let _oneSetCount = this.getOneSetCount(_typeDef);
-            let _attackerMainTypeResArr = this.getMainTypeResArr(attackerArr, attackerType, {
-                beginIdx: 0,
-                len: attackerArr.length / _oneSetCount,
-                itemCount: _mainTypeContainCount
-            });
-            let _beginIdx = getGameValue(_attackerMainTypeResArr[0].arr[0]) - 2;
-            let _handMainTypeResArr = this.getMainTypeResArr(handSerialArr, _handType, {
-                beginIdx: _beginIdx,
-                len: handSerialArr.length / _oneSetCount,
-                itemCount: _mainTypeContainCount
-            });
-            if (_handMainTypeResArr.length != 0) return true;
-        } else if (_handTypeLevel == E_TYPE_LEVEL.TWO) {
-            let _handVal = getGameValue(handSerialArr[0]);
-            let _attackerVal = getGameValue(attackerArr[0]);
-            return _handVal > _attackerVal;
+        if (_handType != E_TYPE.ERROR) {
+            let _handTypeLevel = this.getTypeLevel(_handType);
+            let _attackerTypeLevel = this.getTypeLevel(attackerType);
+            //top level type have only one to play in a game round
+            if (_attackerTypeLevel != _handTypeLevel) {
+                if (_handTypeLevel > _attackerTypeLevel) {
+                    can = true;
+                    type = _handType;
+                }
+            } else {
+                if (_handTypeLevel == E_TYPE_LEVEL.ONE) {
+                    if (handSerialArr.length == attackerArr.length) {
+                        let _typeDef = TypeDefinition[attackerType];
+                        let _mainTypeContainCount = _typeDef.metaType;
+                        let _oneSetCount = this.getOneSetCount(_typeDef);
+                        let _attackerMainTypeResArr = this.getMainTypeResArr(attackerArr, attackerType, {
+                            beginIdx: 0,
+                            len: attackerArr.length / _oneSetCount,
+                            itemCount: _mainTypeContainCount
+                        });
+                        let _beginIdx = getGameValue(_attackerMainTypeResArr[0].arr[0]) - 2;
+                        let _handMainTypeResArr = this.getMainTypeResArr(handSerialArr, _handType, {
+                            beginIdx: _beginIdx,
+                            len: handSerialArr.length / _oneSetCount,
+                            itemCount: _mainTypeContainCount
+                        });
+                        if (_handMainTypeResArr.length != 0) {
+                            can = true;
+                            type = attackerType;
+                        };
+                    }
+                } else if (_handTypeLevel == E_TYPE_LEVEL.TWO) {
+                    let _handVal = getGameValue(handSerialArr[0]);
+                    let _attackerVal = getGameValue(attackerArr[0]);
+                    if (_handVal > _attackerVal) {
+                        can = true;
+                        type = attackerType;
+                    }
+                }
+            }
         }
-        return false;
+        return { can, type };
     }
 
     checkCardType(serialArr: number[]): E_TYPE {

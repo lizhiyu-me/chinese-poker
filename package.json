@@ -1,12 +1,16 @@
 {
   "name": "chinese-poker",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
+  "module": "index.mjs",
+  "browser": "index.js",
   "scripts": {
     "test": "jest",
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc && cp package.json README.md ./dist"
+    "build-tsc": "npm run clean && tsc && cp package.json README.md ./dist",
+    "build-webpack": "npm run clean && webpack && mv ./dist/main.js ./dist/index.js && cp package.json README.md ./dist && npm run gen-d-ts",
+    "gen-d-ts":"tsc ./dist/index.js -d --allowJs"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -30,9 +34,17 @@
   },
   "homepage": "https://github.com/lizhiyu-me/chinese-poker#readme",
   "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-typescript": "^7.16.7",
     "@types/jest": "^27.4.1",
+    "babel-loader": "^8.2.3",
+    "declaration-bundler-webpack-plugin": "^1.0.3",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.6.2"
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.2",
+    "typescript-declaration-webpack-plugin": "^0.2.2",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   }
 }

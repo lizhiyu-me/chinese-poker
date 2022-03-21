@@ -1,11 +1,12 @@
 const path = require('path')
-const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
+// const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
+var DeclarationBundlerPlugin = require('declaration-bundler-webpack-plugin');
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 module.exports = {
   entry: './src/index.ts',
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index'
+    filename: './dist/index.js'
   },
   module: {
     rules: [
@@ -32,8 +33,23 @@ module.exports = {
     globalObject: 'this',
   },
   plugins: [
-    new TypescriptDeclarationPlugin()
+    new WebpackShellPluginNext({
+      onBuildStart:{
+        scripts: ['echo "===> Starting packing with WEBPACK 5"'],
+        blocking: true,
+        parallel: false
+      },
+      onBuildEnd:{
+        scripts: [],
+        blocking: false,
+        parallel: true
+      }
+    }),
+    new DeclarationBundlerPlugin({
+      moduleName: 'chinese-poker',
+      out: './dist/index.d.ts',
+    })
   ],
-  mode: "production",
+  mode: "development",
   target: "node"
 }

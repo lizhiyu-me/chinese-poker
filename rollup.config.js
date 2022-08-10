@@ -5,17 +5,13 @@ export default {
     output: [
         {
             file: 'dist/index.esm.js',
-            format: 'esm', 
-            sourcemap: true
+            format: 'esm'
         }, {
             file: 'dist/index.cjs.js',
-            format: 'cjs', 
-            sourcemap: true
+            format: 'cjs'
         }, {
             file: 'dist/index.umd.js',
-            name: 'GLWidget',
-            format: 'umd',
-            sourcemap: true
+            format: 'umd'
         }
     ],
     plugins: [typescript(),babel()]

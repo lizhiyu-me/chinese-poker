@@ -11,6 +11,7 @@ export default {
             format: 'cjs'
         }, {
             file: 'dist/index.umd.js',
+            name:'chinese-poker',
             format: 'umd'
         }
     ],

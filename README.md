@@ -16,3 +16,15 @@ Test your customize rule with [jest](https://jestjs.io/):
 可以使用 [jest](https://jestjs.io/) 来测试牌型的准确性:
 - 修改 <code>src/__tests__/ruler_spec.ts</code>.
 - 在根目录运行 <code>npm run test </code> 以测试检测结果.
+
+##How to use:
+`npm install chinese-poker`
+
+then(example):
+``` typescript
+import * as poker from "chinese-poker";
+let ruler = new  poker.Ruler();
+let checkRes=  ruler.checkCardType([3,4,5,6,7])
+let defeatRes=  ruler.canDefeat([4,5,6,7,8],[3,4,5,6,7],poker.E_TYPE.SINGLE_ORDER)
+console.log(checkRes,defeatRes);
+```

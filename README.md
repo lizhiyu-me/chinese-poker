@@ -17,10 +17,10 @@ Test your customize rule with [jest](https://jestjs.io/):
 - 修改 <code>src/__tests__/ruler_spec.ts</code>.
 - 在根目录运行 <code>npm run test </code> 以测试检测结果.
 
-##How to use:
+## How to use:
 `npm install chinese-poker`
 
-then(example):
+### Then code like example below:
 ``` typescript
 import * as poker from "chinese-poker";
 let ruler = new  poker.Ruler();
@@ -28,3 +28,7 @@ let checkRes=  ruler.checkCardType([3,4,5,6,7])
 let defeatRes=  ruler.canDefeat([4,5,6,7,8],[3,4,5,6,7],poker.E_TYPE.SINGLE_ORDER)
 console.log(checkRes,defeatRes);
 ```
+
+**If any help, give me a star to support [Click to star⭐](https://github.com/lizhiyu-me/chinese-poker)**
+
+**给个小星星吧 [点击赏个小星星⭐](https://github.com/lizhiyu-me/chinese-poker)**

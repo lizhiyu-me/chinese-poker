@@ -1,6 +1,6 @@
 {
   "name": "chinese-poker",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "",
   "main": "index.cjs.js",
   "module": "index.esm.js",
@@ -8,6 +8,7 @@
   "types": "index.d.ts",
   "scripts": {
     "build": "npm run clean && rollup -c && cp package.json README.md ./dist",
+    "bb":"rollup -c && cp package.json README.md ./dist",
     "clean": "rm -rf dist",
     "test": "jest"
   },

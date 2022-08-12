@@ -1,4 +1,7 @@
 # Chinese Poker
+
+[![npm version](https://img.shields.io/npm/v/chinese-poker)](https://www.npmjs.com/package/chinese-poker)
+
 >This repo is mainly about the rule logic of Chinese poker, and it is not just for classic Chinese poker, but for the poker you want to customize.
 
 **Just config in file <code>src/Config.ts</code> with no logic code change.**
@@ -67,6 +70,9 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
 
 ## How to use:
 `npm install chinese-poker`
+or
+`yarn add chinese-poker`
+
 
 ### Then code like example below:
 ``` typescript

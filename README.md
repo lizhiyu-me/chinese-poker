@@ -13,6 +13,54 @@ Test your customize rule with [jest](https://jestjs.io/):
 
 **只需要修改 <code>src/Config.ts</code> 文件,就可以配置你想要的任意牌型.**
 
+```typescript
+//定义牌型 define poker type
+
+/*
+* - metaType 基牌元类型
+* - minCount 基牌数量下限
+* - increment 基牌元类型关系（是否递增）
+
+* - subTypeData 副牌数据
+* - val 特定值
+*/
+export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
+    [E_TYPE.SINGLE]: { metaType: E_META.ONE, count: 1 },
+    [E_TYPE.DOUBLE]: { metaType: E_META.TWO, count: 1 },
+    [E_TYPE.TRIPLE]: { metaType: E_META.THREE, count: 1 },
+    [E_TYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, increment: true },
+    [E_TYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, increment: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
+    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
+    [E_TYPE.TRIPLE_ORDER_TAKE_ONE]: {
+        metaType: E_META.THREE, minCount: 2, increment: true,
+        subTypeData: { metaType: E_META.ONE, count: 1 }
+    },
+    [E_TYPE.TRIPLE_ORDER_TAKE_TWO]: {
+        metaType: E_META.THREE, minCount: 2, increment: true,
+        subTypeData: { metaType: E_META.TWO, count: 1 }
+    },
+    [E_TYPE.TRIPLE_TAKE_ONE]: {
+        metaType: E_META.THREE, count: 1,
+        subTypeData: { metaType: E_META.ONE, count: 1 }
+    },
+    [E_TYPE.TRIPLE_TAKE_TWO]: {
+        metaType: E_META.THREE, count: 1,
+        subTypeData: { metaType: E_META.TWO, count: 1 }
+    },
+    [E_TYPE.QUADRUPLE_TAKE_TWO_SINGLE]: {
+        metaType: E_META.FOUR, count: 1,
+        subTypeData: { metaType: E_META.ONE, count: 2 }
+    },
+    [E_TYPE.QUADRUPLE_TAKE_TWO_DOUBLE]: {
+        metaType: E_META.FOUR, count: 1,
+        subTypeData: { metaType: E_META.TWO, count: 2 }
+    },
+    [E_TYPE.QUADRUPLE]: { metaType: E_META.FOUR, count: 1 },
+    [E_TYPE.DOUBLE_JOKER]: { metaType: E_META.ONE, count: 2, val: [FaceSerialsDic[E_FACE.B_JOKER][0], FaceSerialsDic[E_FACE.R_JOKER][0]] }
+}
+```
+
 可以使用 [jest](https://jestjs.io/) 来测试牌型的准确性:
 - 修改 <code>src/__tests__/ruler_spec.ts</code>.
 - 在根目录运行 <code>npm run test </code> 以测试检测结果.

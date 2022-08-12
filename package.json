@@ -7,9 +7,8 @@
   "browser": "index.umd.js",
   "types": "index.d.ts",
   "scripts": {
-    "build": "npm run clean && rollup -c && cp package.json README.md ./dist",
-    "bb":"rollup -c && cp package.json README.md ./dist",
-    "clean": "rm -rf dist",
+    "build": "npm run clean && rollup -c && shx cp package.json README.md ./dist",
+    "clean": "shx rm -rf dist",
     "test": "jest"
   },
   "jest": {
@@ -46,6 +45,7 @@
     "rollup": "^2.77.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-typescript2": "^0.31.2",
+    "shx": "^0.3.4",
     "ts-jest": "^27.1.3",
     "typescript": "^4.6.2"
   }

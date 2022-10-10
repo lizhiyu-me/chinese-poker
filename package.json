@@ -1,6 +1,6 @@
 {
   "name": "chinese-poker",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "main": "index.cjs.js",
   "module": "index.esm.js",

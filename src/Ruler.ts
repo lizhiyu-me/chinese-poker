@@ -1,6 +1,6 @@
-
-import { E_TYPE, E_TYPE_LEVEL, OrderTopLimitVal, TypeDefinition, TypeLevelDic } from "./Config.ts";
-import { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const.ts";
+import { E_TYPE, E_TYPE_LEVEL, OrderTopLimitVal, TypeLevelDic } from "./Config.ts";
+import {TypeDefinition} from "./Config.ts";
+import type { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const.ts";
 import { MetaProcessor } from "./MetaProcessor.ts";
 import { getGameValue, getIsLineLimitType, getSortedValueItemArr } from "./SpecificGetFn.ts";
 import Utils from "./utils/utils.ts";
@@ -15,8 +15,14 @@ export type T_SUBTYPE_RULER = {
     itemCount: number,
     minCount: number
 }
+
 export class Ruler {
-    constructor() { }
+    private typeDefinition: typeof TypeDefinition;
+
+    constructor(typeDefinition: typeof TypeDefinition = TypeDefinition) {
+
+        this.typeDefinition = typeDefinition;
+    }
 
     private getMainTypeResArr(ownArr: number[], type: number, ruler: {
         beginIdx: number;
@@ -109,7 +115,7 @@ export class Ruler {
             } else {
                 if (_handTypeLevel == E_TYPE_LEVEL.ONE) {
                     if (handSerialArr.length == attackerArr.length) {
-                        let _typeDef = TypeDefinition[attackerType];
+                        let _typeDef = this.typeDefinition[attackerType];
                         let _mainTypeContainCount = _typeDef.metaType;
                         let _oneSetCount = this.getOneSetCount(_typeDef);
                         let _attackerMainTypeResArr = this.getMainTypeResArr(attackerArr, attackerType, {
@@ -177,7 +183,7 @@ export class Ruler {
     }
 
     private isType(serialArr: number[], type: E_TYPE): boolean {
-        let _def = TypeDefinition[type];
+        let _def = this.typeDefinition[type];
         let _serialsTotalCount = serialArr.length;
         let _oneSetCount = this.getOneSetCount(_def);
         let _setCount = _serialsTotalCount / _oneSetCount;

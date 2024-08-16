@@ -1,6 +1,6 @@
 {
   "name": "@ddz/cardtype-validator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "exports": "./src/index.ts",
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.2"

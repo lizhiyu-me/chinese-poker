@@ -1,5 +1,5 @@
 
-import { T_TYPE_DATA, E_META, E_FACE } from "./Const";
+import { T_TYPE_DATA, E_META, E_FACE } from "./Const.ts";
 
 export const StandardSerialArr = [
     0x03, 0x13, 0x23, 0x33,

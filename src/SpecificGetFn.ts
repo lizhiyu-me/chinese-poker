@@ -1,6 +1,6 @@
 
-import { E_TYPE, E_TYPE_LEVEL, LimitOrderTypeArr, TypeLevelDic, ValueCountDic, ValueDic } from "./Config";
-import { E_FACE, T_VALUE_ITEM } from "./Const";
+import { E_TYPE, E_TYPE_LEVEL, LimitOrderTypeArr, TypeLevelDic, ValueCountDic, ValueDic } from "./Config.ts";
+import { E_FACE, T_VALUE_ITEM } from "./Const.ts";
 
 export function getGameValue(serialNum: number): number {
     let _faceVal: E_FACE = getFaceValue(serialNum);

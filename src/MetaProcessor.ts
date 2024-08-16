@@ -1,5 +1,5 @@
 
-import { E_META } from "./Const";
+import { E_META } from "./Const.ts";
 
 export class MetaProcessor {
     private mMetaLib: { [count: number]: number[][] } = {};

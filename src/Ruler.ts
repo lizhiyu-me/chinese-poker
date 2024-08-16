@@ -1,9 +1,9 @@
 
-import { E_TYPE, E_TYPE_LEVEL, OrderTopLimitVal, TypeDefinition, TypeLevelDic } from "./Config";
-import { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const";
-import { MetaProcessor } from "./MetaProcessor";
-import { getGameValue, getIsLineLimitType, getSortedValueItemArr } from "./SpecificGetFn";
-import Utils from "./utils/utils";
+import { E_TYPE, E_TYPE_LEVEL, OrderTopLimitVal, TypeDefinition, TypeLevelDic } from "./Config.ts";
+import { T_CHECK_RES, T_TYPE_DATA, T_VALUE_ITEM } from "./Const.ts";
+import { MetaProcessor } from "./MetaProcessor.ts";
+import { getGameValue, getIsLineLimitType, getSortedValueItemArr } from "./SpecificGetFn.ts";
+import Utils from "./utils/utils.ts";
 
 export interface T_CHECK_RES_FINAL {
     main: T_CHECK_RES;

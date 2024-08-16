@@ -1,3 +1,3 @@
-export {Ruler} from "./Ruler";
-export {E_TYPE} from "./Config";
+export {Ruler} from "./Ruler.ts";
+export {E_TYPE} from "./Config.ts";
 

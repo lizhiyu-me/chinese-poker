@@ -127,7 +127,6 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
     [E_TYPE.SINGLE_ORDER]: { metaType: E_META.ONE, minCount: 5, increment: true },
     [E_TYPE.DOUBLE_ORDER]: { metaType: E_META.TWO, minCount: 3, increment: true },
     [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
-    [E_TYPE.TRIPLE_ORDER]: { metaType: E_META.THREE, minCount: 2, increment: true },
     [E_TYPE.TRIPLE_ORDER_TAKE_ONE]: {
         metaType: E_META.THREE, minCount: 2, increment: true,
         subTypeData: { metaType: E_META.ONE, count: 1 }
@@ -165,3 +164,29 @@ export const LimitOrderTypeArr: E_TYPE[] = [
     E_TYPE.TRIPLE_ORDER_TAKE_ONE,
     E_TYPE.TRIPLE_ORDER_TAKE_TWO
 ]
+
+export function getConfig(): {
+    StandardSerialArr: number[];
+    FaceSerialsDic: { [face in E_FACE]?: number[] };
+    ValueDic: { [face in E_FACE]?: number };
+    ValueCountDic: { [value: number]: number };
+    E_TYPE: typeof E_TYPE;
+    E_TYPE_LEVEL: typeof E_TYPE_LEVEL;
+    TypeLevelDic: { [level: number]: E_TYPE[] };
+    TypeDefinition: { [type: number]: T_TYPE_DATA };
+    OrderTopLimitVal: number;
+    LimitOrderTypeArr: E_TYPE[];
+} {
+    return {
+        StandardSerialArr,
+        FaceSerialsDic,
+        ValueDic,
+        ValueCountDic,
+        E_TYPE,
+        E_TYPE_LEVEL,
+        TypeLevelDic,
+        TypeDefinition,
+        OrderTopLimitVal,
+        LimitOrderTypeArr
+    }
+}

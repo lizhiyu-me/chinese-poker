@@ -1,18 +1,6 @@
 # Chinese Poker
 >This repository primarily focuses on the rule logic of Chinese poker, catering not only to the classic version but also to any customizations you might want to make.
 
-
-## Installation:
-
-To use this package, run either:
-```bash
-npm install chinese-poker
-```
-or
-```bash
-yarn add chinese-poker
-```
-
 **Configure in <code>src/Config.ts</code> without modifying any logic code.**
 
 ```typescript
@@ -65,13 +53,14 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
 
 ### Here's an example of how to use the code:
 ``` typescript
-import * as poker from "chinese-poker";
-let ruler = new  poker.Ruler();
-let checkRes=  ruler.checkCardType([3,4,5,6,7])
-let defeatRes=  ruler.canDefeat([4,5,6,7,8],[3,4,5,6,7],poker.E_TYPE.SINGLE_ORDER)
-console.log(checkRes,defeatRes);
-```
+import * as cardTypeValidator from "@ddz/cardtype-validator/";
 
-### To verify the accuracy of the card types, you can utilize [jest](https://jestjs.io/):
-- Update <code>src/__tests__/ruler_spec.ts</code>.
-- Execute <code>npm run test</code> from the root directory to view the test outcomes.
+let ruler = new cardTypeValidator.Ruler();
+let checkRes = ruler.checkCardType([3, 4, 5, 6, 7]);
+let defeatRes = ruler.canDefeat(
+  [4, 5, 6, 7, 8],
+  [3, 4, 5, 6, 7],
+  cardTypeValidator.E_TYPE.SINGLE_ORDER,
+);
+console.log(checkRes, defeatRes);
+```

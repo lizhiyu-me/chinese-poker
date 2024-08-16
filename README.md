@@ -53,9 +53,22 @@ export const TypeDefinition: { [type: number]: T_TYPE_DATA } = {
 
 ### Here's an example of how to use the code:
 ``` typescript
-import * as cardTypeValidator from "@ddz/cardtype-validator/";
+import { Ruler, E_TYPE, getConfig } from "@ddz/cardtype-validator";
 
-let ruler = new cardTypeValidator.Ruler();
+// Get the default configuration
+const defaultConfig = getConfig();
+
+// Override specific parts of the configuration
+const customConfig = {
+  ...defaultConfig,
+  TypeDefinition: {
+    ...defaultConfig.TypeDefinition,
+    // Add or modify type definitions here
+  }
+};
+
+// Use the custom configuration
+const ruler = new Ruler(customConfig);
 let checkRes = ruler.checkCardType([3, 4, 5, 6, 7]);
 let defeatRes = ruler.canDefeat(
   [4, 5, 6, 7, 8],
